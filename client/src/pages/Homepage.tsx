@@ -19,7 +19,6 @@ export default function Homepage() {
     const [actions, setActions] = useState<Action[]>([]);
     const [action,setAction] = useState<Action>();
     const [inProp, setInProp] = useState(false);
-    const nodeRef = useRef(null);
 
     useEffect(() => {
         setTimeout(function() {
@@ -62,7 +61,8 @@ export default function Homepage() {
                 id: '',
                 Description: '',
                 Active: true,
-                Goalid: goal.id
+                Goalid: goal.id,
+                Reminder: false
             })
         }
         else {
@@ -99,7 +99,7 @@ export default function Homepage() {
             <Box sx={{padding: '15px', m: 2}}>
                         <Typography variant='h5' align='center' color='primary.white'>
                             {!goal &&'GOALZ'}
-                            {!goal && !action && 'ACTIONS'}
+                            {goal && !action && 'ACTIONS'}
                         </Typography>
                             {!goal && !action &&
                                     <GoalList goals={goals} loading={loading} onClick={editGoal} />}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FormControl, InputLabel, Input, Switch ,Button, Box, TextField, FormControlLabel, IconButton } from '@mui/material';
-import {Delete, Edit} from '@mui/icons-material'
+import {Delete, Check, Edit} from '@mui/icons-material'
 import { Goal } from '../models/goalModels'
 
 interface GoalListProps {
@@ -9,13 +9,11 @@ interface GoalListProps {
 
 export default function GoalForm({goal}: GoalListProps) {
   const [goalState, setGoalState] = useState<Goal>(goal);
+  const [edit, setEdit] = useState<boolean>(false);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = event.target;
-    setGoalState({
-      ...goalState,
-      [name]: type === 'checkbox' ? checked : value
-    });
+  const handleChange =
+  (prop: keyof Goal) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setGoalState({ ...goalState, [prop]: event.target.value });
   };
 
   return (
@@ -24,9 +22,13 @@ export default function GoalForm({goal}: GoalListProps) {
         <TextField 
             id="description"
             name="Description"
-            value={goal.Description}
-            onChange={handleChange}
-            className='header-form' />
+            value={goalState.Description}
+            onChange={handleChange('Description')}
+            className='header-form'
+            inputProps={{
+              style: {fontSize: 32} 
+            }}
+            disabled={!edit} />
             <Box sx={{m:3}}>
               <FormControlLabel 
                 sx={{m: 1}}
@@ -34,15 +36,20 @@ export default function GoalForm({goal}: GoalListProps) {
                   <Switch
                     id="active"
                     name="Active"
-                    checked={goal.Active}
-                    onChange={handleChange}
+                    checked={goalState.Active}
+                    onChange={handleChange('Active')}
                     color='warning'
+                    disabled={!edit}
                     />} 
                 label="Active" />
                 <Box sx={{float: 'right' }}>
-                  <IconButton aria-label="edit" size="large" color="secondary">
+                  {edit ?
+                    <IconButton aria-label="check" size="large" color="warning" onClick={()=>setEdit(false)}>
+                      <Check fontSize="inherit" />
+                    </IconButton> :
+                  <IconButton aria-label="edit" size="large" color="secondary" onClick={()=>setEdit(true)}>
                     <Edit fontSize="inherit" />
-                  </IconButton>
+                  </IconButton>}
                   <IconButton aria-label="delete" size="large" color="error">
                     <Delete fontSize="inherit" />
                   </IconButton>

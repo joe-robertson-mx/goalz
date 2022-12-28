@@ -16,10 +16,16 @@ const theme = createTheme({
       main: red.A400,
     },
     info: {
-      main: grey[400]
+      main: grey[400],
     },
     warning: {
-      main: '#EB9F53'
+      main: '#EB9F53',
+    },
+    action : {
+      disabled: 'grey',
+    },
+    text: {
+      disabled: 'grey'
     }
   },
 });

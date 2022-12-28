@@ -7,8 +7,13 @@ export interface Goal {
 export interface Action {
     id: string,
     Description: string,
-    Active: boolean
-    Goalid: string
+    Notes?: string,
+    Active: boolean,
+    Goalid: string,
+    Reminder: boolean,
+    StartDate?: Date,
+    FrequencyDays?: BigInteger,
+    TimesPerDay?: BigInteger
 }
 
 export const testGoalData: Goal[] = [
@@ -44,18 +49,24 @@ export const testActionData: Action[] =  [
         id: '101',
         Description: 'Watch video',
         Active: true,
-        Goalid: '1'
+        Goalid: '1',
+        Notes: '',
+        Reminder: false
     },
     {
         id: '102',
         Description: 'Book Tarifa for october',
         Active: true,
-        Goalid: '1'
+        Goalid: '1',
+        Notes: '',
+        Reminder: false
     },
     {
         id: '103',
         Description: 'Take kite stuff to New Zealand',
         Active: true,
-        Goalid: '1'
+        Goalid: '1',
+        Notes: '',
+        Reminder: false
     }
 ];
