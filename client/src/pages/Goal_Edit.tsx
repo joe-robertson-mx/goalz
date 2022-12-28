@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Button, Skeleton, Box, Typography} from '@mui/material';
-import List from '../components/List';
+import List from '../components/GoalList';
 import {ListSkeleton} from '../components/Skeleton';
 import {useParams} from 'react-router-dom';
 

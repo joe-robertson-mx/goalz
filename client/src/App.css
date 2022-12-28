@@ -48,3 +48,57 @@
   text-align: center;
   font-weight: 400;
 }
+
+.MuiInputBase-root .MuiInputBase-input {
+  color: white;
+  text-align: center;
+  font-weight: 400;
+  font-size: 32px;
+  min-width: 100%;
+}
+
+.header-form fieldset {
+    border-bottom: 3px solid #EB9F53 !important;
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px;
+}
+
+/* Animations */
+
+.fade-enter {
+  opacity: 0.01;
+}
+
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.fade-leave {
+  opacity: 1;
+}
+
+.fade-leave.fade-leave-active {
+  opacity: 0.01;
+  transition: opacity 500ms ease-in;
+}
+
+.rise-enter {
+  opacity: 0;
+  transform:translateY(-100%);
+}
+.rise-enter-active {
+  opacity: 1;
+  transform:translateY(0);
+  transition: opacity 300ms, transform 500ms;
+}
+.rise-exit {
+  opacity: 1;
+  transform:translateY(0);
+}
+.rise-exit-active {
+  opacity: 0;
+  transform:translateY(200%);
+  transition: opacity 300ms, transform 10000ms;
+}

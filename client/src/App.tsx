@@ -1,6 +1,5 @@
 import { Route, Routes, BrowserRouter, useLocation } from "react-router-dom";
 import PageLayout from './components/PageLayout';
-
 import {ThemeProvider} from '@mui/material/styles';
 import theme from './theme';
 import'./App.css'
