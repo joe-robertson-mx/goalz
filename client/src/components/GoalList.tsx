@@ -1,6 +1,6 @@
 import React from 'react';
 import {List, Box, Divider, ListItemButton, ListItemText} from '@mui/material';
-import {Goal} from '../models/goalModels'
+import {Goal} from '../models/index'
 import GoalListItem from './GoalListItem';
 import {ListSkeleton} from './Skeleton';
 

@@ -4,7 +4,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {Delete, Edit, Check} from '@mui/icons-material'
-import { Action } from '../models/goalModels'
+import { Action } from '../models/index'
 
 interface ActionListProps {
     action: Action;
@@ -72,7 +72,7 @@ export default function actionForm({action}: ActionListProps) {
                   <Switch
                     id="active"
                     name="Active"
-                    checked={actionState.Active}
+                    checked={actionState.Active!}
                     onChange={handleChange('Active')}
                     color='warning'
                     disabled={!edit}
@@ -84,7 +84,7 @@ export default function actionForm({action}: ActionListProps) {
                   <Switch
                     id="reminder"
                     name="Reminder"
-                    checked={actionState.Reminder}
+                    checked={actionState.Reminder!}
                     onChange={handleChange('Reminder')}
                     color='primary'
                     disabled={!edit}
@@ -118,10 +118,10 @@ export default function actionForm({action}: ActionListProps) {
                         sx={{mt: 2 }}
                         inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} />
                       <TextField 
-                        id="timesPerDay"  
-                        name="TimesPerDay"
-                        value={actionState.TimesPerDay}
-                        onChange={handleChange('TimesPerDay')}
+                        id="timesPerDays"  
+                        name="TimesPerDays"
+                        value={actionState.TimesPerDays}
+                        onChange={handleChange('TimesPerDays')}
                         disabled={!edit}
                         label='Times per Day'
                         fullWidth

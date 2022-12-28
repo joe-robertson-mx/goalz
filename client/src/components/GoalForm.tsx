@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { FormControl, InputLabel, Input, Switch ,Button, Box, TextField, FormControlLabel, IconButton } from '@mui/material';
 import {Delete, Check, Edit} from '@mui/icons-material'
-import { Goal } from '../models/goalModels'
+import { Goal } from '../models/index'
+import {DataStore} from '@aws-amplify/datastore';
+
 
 interface GoalListProps {
     goal: Goal;
+    onDelete:(id: string) => void;
+    onSave:(goal: Goal) => void;
 }
 
-export default function GoalForm({goal}: GoalListProps) {
+export default function GoalForm({goal, onDelete, onSave}: GoalListProps) {
   const [goalState, setGoalState] = useState<Goal>(goal);
   const [edit, setEdit] = useState<boolean>(false);
 
@@ -15,6 +19,33 @@ export default function GoalForm({goal}: GoalListProps) {
   (prop: keyof Goal) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setGoalState({ ...goalState, [prop]: event.target.value });
   };
+
+
+  const saveGoal = async () => {
+      const original = await DataStore.query(Goal, goalState.id);
+      if (original) {
+        console.log ('Exists')
+        let newGoal = await DataStore.save(
+          Goal.copyOf(original, updated => {
+            updated.Description = goalState.Description
+            updated.Active = goalState.Active
+          })
+        )
+        onSave(newGoal)
+        setEdit(false)
+      }
+      else {
+        console.log ('New')
+        let goalToCommit = new Goal ({
+          Description: goalState.Description,
+          Active: goalState.Active
+        })
+        let newGoal = await DataStore.save (goalToCommit)
+        onSave(newGoal)
+        setEdit(false)
+      }
+  }
+
 
   return (
     <Box sx={{padding: '15px', m: 2}}>
@@ -44,13 +75,13 @@ export default function GoalForm({goal}: GoalListProps) {
                 label="Active" />
                 <Box sx={{float: 'right' }}>
                   {edit ?
-                    <IconButton aria-label="check" size="large" color="warning" onClick={()=>setEdit(false)}>
+                    <IconButton aria-label="check" size="large" color="warning" onClick={()=> saveGoal()}>
                       <Check fontSize="inherit" />
                     </IconButton> :
                   <IconButton aria-label="edit" size="large" color="secondary" onClick={()=>setEdit(true)}>
                     <Edit fontSize="inherit" />
                   </IconButton>}
-                  <IconButton aria-label="delete" size="large" color="error">
+                  <IconButton aria-label="delete" size="large" color="error" onClick={()=>onDelete(goal.id)}>
                     <Delete fontSize="inherit" />
                   </IconButton>
                 </Box>
