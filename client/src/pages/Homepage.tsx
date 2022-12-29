@@ -6,7 +6,7 @@ import WideButton from '../components/WideButton';
 import GoalForm from '../components/GoalForm';
 import ActionForm from '../components/ActionForm'
 import { Goal, Action } from '../models/index';
-import {retrieveGoals, retrieveActions} from '../services/services';
+import {retrieveGoals, retrieveActions, handleDeleteAction, handleDeleteGoal} from '../services/services';
 import TruckImg from '../assets/72.jpg';
 
 
@@ -61,6 +61,7 @@ export default function Homepage() {
             const newGoals = goals.filter (goalArr=>goalArr.id !== goal.id);
             setGoals (newGoals)
             setGoal (undefined)
+            handleDeleteGoal(goal.id)
         }        
       }
 
@@ -82,7 +83,10 @@ export default function Homepage() {
                 Description: '',
                 Active: true,
                 goalID: goal.id,
-                Reminder: false
+                Reminder: false,
+                FrequencyDays: 1,
+                TimesPerDays: 1,
+                Notes: "" 
             }))
             setNewItem(true)
         }
@@ -96,11 +100,15 @@ export default function Homepage() {
             const newActions = actions.filter (actionArr=>actionArr.id !== action.id);
             setActions (newActions)
             setAction (undefined)
+            handleDeleteAction(action.id)
         }        
       }
 
       const saveAction = (action: Action) => {
         // remove old Action if necessary
+        console.dir(action)
+        console.dir(allActions)
+        console.dir(actions)
         const newActions = allActions.filter (actionArr=>actionArr.id !== action.id);
         newActions.push (action)
         setAllActions(newActions)

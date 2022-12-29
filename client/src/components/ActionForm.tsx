@@ -25,6 +25,14 @@ export default function actionForm({action, onDelete, onSave, newItem}: ActionLi
       }
     };
 
+  const handleNoChange =
+    (prop: keyof Action) => (event: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
+      if (event.target.value) {
+        setActionState({ ...actionState, [prop]: parseInt (event.target.value) });
+      }
+    };
+  
+
   const handleToggleChange = 
   (prop: keyof Action) => (event: React.ChangeEvent<HTMLInputElement>) => {
       setActionState({ ...actionState, [prop]: event.target.checked });
@@ -38,10 +46,25 @@ export default function actionForm({action, onDelete, onSave, newItem}: ActionLi
     const saveAction = async () => {    
       if (!newItem) {
         const original = await DataStore.query(Action, actionState.id);
-        if (original) {
+        if (!original) {
+          console.log('No original')
+          let ActionToCommit = new Action ({
+            Description: actionState.Description,
+            Notes: actionState.Notes,
+            Active: actionState.Active,
+            Reminder: actionState.Reminder,
+            FrequencyDays: actionState.FrequencyDays,
+            TimesPerDays: actionState.TimesPerDays,
+            StartDate: actionState.StartDate,
+            goalID: actionState.goalID
+          })
+          let newAction = await DataStore.save (ActionToCommit)
+          onSave(newAction)
+          setEdit(false)
           return;
         }
         console.log ('Exists')
+        console.dir (original)
         let newAction = await DataStore.save(
           Action.copyOf(original!, updated => {
             updated.Description = actionState.Description
@@ -91,13 +114,13 @@ export default function actionForm({action, onDelete, onSave, newItem}: ActionLi
             disabled={!edit} />
           <Box sx={{float: 'right' }}>
             {edit ?
-              <IconButton aria-label="check" size="large" color="warning" onClick={()=>setEdit(false)}>
+              <IconButton aria-label="check" size="large" color="warning" onClick={()=>saveAction()}>
                 <Check fontSize="inherit" />
               </IconButton> :
             <IconButton aria-label="edit" size="large" color="secondary" onClick={()=>setEdit(true)}>
               <Edit fontSize="inherit" />
             </IconButton>}
-            <IconButton aria-label="delete" size="large" color="error">
+            <IconButton aria-label="delete" size="large" color="error" onClick={()=>onDelete(action.id)}>
               <Delete fontSize="inherit" />
             </IconButton>
           </Box>
@@ -161,19 +184,19 @@ export default function actionForm({action, onDelete, onSave, newItem}: ActionLi
                         id="frequencyDays"  
                         name="FrequencyDays"
                         value={actionState.FrequencyDays}
-                        onChange={handleChange('FrequencyDays')}
+                        onChange={handleNoChange('FrequencyDays')}
                         disabled={!edit}
                         label='Reminder Frequency (Days)'
                         fullWidth
                         focused
                         color="warning"
                         sx={{mt: 2 }}
-                        inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} />
+                        inputProps={{ type: 'number'}} />
                       <TextField 
                         id="timesPerDays"  
                         name="TimesPerDays"
                         value={actionState.TimesPerDays}
-                        onChange={handleChange('TimesPerDays')}
+                        onChange={handleNoChange('TimesPerDays')}
                         disabled={!edit}
                         label='Times per Day'
                         fullWidth

@@ -24,12 +24,22 @@ export const retrieveActions = async ():Promise<Action[]> => {
 }
 
 
-export const handleDelete = async (id) => {
-    const todelete = await DataStore.query(id);
+export const handleDeleteGoal = async (id) => {
+    const todelete = await DataStore.query(Goal, id);
     if (todelete) {
       DataStore.delete(todelete);
     }
     else {
-      console.error ('Task not dound to delete')
+      console.error ('Item not found to delete')
+    }    
+  }
+
+export const handleDeleteAction = async (id) => {
+    const todelete = await DataStore.query(Action, id);
+    if (todelete) {
+      DataStore.delete(todelete);
+    }
+    else {
+      console.error ('Item not found to delete')
     }    
   }
