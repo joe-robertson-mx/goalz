@@ -3,7 +3,7 @@ frontend:
   phases:
     # IMPORTANT - Please verify your build commands
     pre_build:
-      commands: [npm i -g npm && npm ci"]
+      commands: [npm i -g npm && npm i -g typescript && npm ci"]
     build:
       commands: [npm run build]
   artifacts:
