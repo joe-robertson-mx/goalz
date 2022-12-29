@@ -7,7 +7,7 @@ frontend:
     #     -npm ci
     build:
       commands: 
-        - npm ci --legacy-peer-deps
+        - npm ci
         - npm run build
   artifacts:
     # IMPORTANT - Please verify your build output directory
