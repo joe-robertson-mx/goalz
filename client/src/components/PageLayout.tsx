@@ -1,12 +1,15 @@
 import React from 'react';
-import {BottomNavigation, BottomNavigationAction, Box, AppBar, Typography, Toolbar, IconButton,  Menu, MenuItem} from '@mui/material';
-import {Home, FitnessCenter, Settings, Api, AccountCircle} from '@mui/icons-material';
+import { Box, AppBar, Typography, Toolbar, IconButton,  Menu, MenuItem} from '@mui/material';
+import {Home, Api, AccountCircle} from '@mui/icons-material';
+import {AmplifyUser, AuthEventData} from '@aws-amplify/ui/dist/types/index'
 
 export interface PageLayoutProps {
     children: React.ReactNode;
+    user: AmplifyUser|undefined;
+    signOut: ((data?: AuthEventData | undefined) => void);
 }
 
-export default function PageLayout({children}: PageLayoutProps) {
+export default function PageLayout({user, signOut, children}: PageLayoutProps) {
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   
@@ -62,9 +65,9 @@ export default function PageLayout({children}: PageLayoutProps) {
                         open={Boolean(anchorEl)}
                         onClose={handleClose}
                     >
-                        <MenuItem onClick={handleClose}>Joe</MenuItem>
+                        <MenuItem onClick={handleClose}>{user.attributes?.email}</MenuItem>
                         <MenuItem onClick={handleClose}>Profile</MenuItem>
-                        <MenuItem onClick={handleClose}>Sign Out</MenuItem>
+                        <MenuItem onClick={signOut}>Sign Out</MenuItem>
                     </Menu>
                     </div>
                 </Toolbar>

@@ -1,0 +1,18 @@
+type Action @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  Description: String!
+  Notes: String
+  Active: Boolean
+  goalID: ID! @index(name: "byGoal")
+  Reminder: Boolean
+  StartDate: AWSDate
+  FrequencyDays: Int
+  TimesPerDays: Int
+}
+
+type Goal @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  Description: String!
+  Active: Boolean!
+  Actions: [Action] @hasMany(indexName: "byGoal", fields: ["id"])
+}
