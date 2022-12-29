@@ -15,17 +15,24 @@ interface ActionListProps {
 }
 
 export default function actionForm({action, onDelete, onSave, newItem}: ActionListProps) {
-  const [actionState, setactionState] = useState<Action>(action);
+  const [actionState, setActionState] = useState<Action>(action);
   const [edit, setEdit] = useState<boolean>(newItem);
 
   const handleChange =
     (prop: keyof Action) => (event: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
-      setactionState({ ...actionState, [prop]: event.target.value });
+      if (event.target.value) {
+        setActionState({ ...actionState, [prop]: event.target.value });
+      }
     };
+
+  const handleToggleChange = 
+  (prop: keyof Action) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setActionState({ ...actionState, [prop]: event.target.checked });
+  };
   
   const handleDateChange =
     (prop: keyof Action) => (value: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>|null) => {
-      setactionState({ ...actionState, [prop]: value });
+      setActionState({ ...actionState, [prop]: value });
     };
 
     const saveAction = async () => {    
@@ -118,7 +125,7 @@ export default function actionForm({action, onDelete, onSave, newItem}: ActionLi
                     id="active"
                     name="Active"
                     checked={actionState.Active!}
-                    onChange={handleChange('Active')}
+                    onChange={handleToggleChange('Active')}
                     color='warning'
                     disabled={!edit}
                     />} 
@@ -130,8 +137,8 @@ export default function actionForm({action, onDelete, onSave, newItem}: ActionLi
                     id="reminder"
                     name="Reminder"
                     checked={actionState.Reminder!}
-                    onChange={handleChange('Reminder')}
-                    color='primary'
+                    onChange={handleToggleChange('Reminder')}
+                    color='secondary'
                     disabled={!edit}
                     />} 
                 label="Reminder" />

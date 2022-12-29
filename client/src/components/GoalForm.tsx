@@ -21,6 +21,11 @@ export default function GoalForm({goal, onDelete, onSave, newItem}: GoalListProp
     setGoalState({ ...goalState, [prop]: event.target.value });
   };
 
+  const handleToggleChange = 
+  (prop: keyof Goal) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setGoalState({ ...goalState, [prop]: event.target.checked });
+  };
+
 
   const saveGoal = async () => {  
       if (!newItem) {
@@ -73,7 +78,7 @@ export default function GoalForm({goal, onDelete, onSave, newItem}: GoalListProp
                     id="active"
                     name="Active"
                     checked={goalState.Active}
-                    onChange={handleChange('Active')}
+                    onChange={handleToggleChange('Active')}
                     color='warning'
                     disabled={!edit}
                     />} 
