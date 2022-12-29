@@ -2,12 +2,12 @@ version: 1
 frontend:
   phases:
     # IMPORTANT - Please verify your build commands
-    pre_build:
-      commands: 
-        -npm ci
+    # pre_build:
+    #   commands: 
+    #     -npm ci
     build:
       commands: 
-        - npm ci
+        - npm i
         - npm run build
   artifacts:
     # IMPORTANT - Please verify your build output directory
