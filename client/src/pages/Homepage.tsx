@@ -6,8 +6,8 @@ import WideButton from '../components/WideButton';
 import GoalForm from '../components/GoalForm';
 import ActionForm from '../components/ActionForm'
 import { Goal, Action } from '../models/index';
-import {retrieveGoals, retrieveActions} from '../services/services'
-import TruckImg from '../assets/72.jpg'
+import {retrieveGoals, retrieveActions} from '../services/services';
+import TruckImg from '../assets/72.jpg';
 
 
 export default function Homepage() {
@@ -18,20 +18,17 @@ export default function Homepage() {
     const [actions, setActions] = useState<Action[]>([]);
     const [allActions, setAllActions] = useState<Action[]>([]);
     const [action, setAction] = useState<Action>();
-
+    const [newItem, setNewItem] = useState<boolean>(true);
 
     useEffect(() => {
         if (!goal && !action) {
             retrieveGoals().then(goals=> {
                 setGoals(goals)               
             })
-
             retrieveActions().then(actions=>{
                 setAllActions(actions)
             })
-
             setLoading(false);
-
         }
       }, []);
 
@@ -50,11 +47,13 @@ export default function Homepage() {
             Description: '',
             Active: true,
         }))
+        setNewItem(true)
       }
 
       const editGoal = (id: string) => {
         const goal = goals.find(goal => goal.id === id);
         setGoal(goal)
+        setNewItem(false)
       }
 
       const deleteGoal = (id: string) => {
@@ -70,6 +69,7 @@ export default function Homepage() {
         const newGoals = goals.filter (goalArr=>goalArr.id !== goal.id);
         newGoals.push (goal)
         setGoals (newGoals)
+        setNewItem (false)
       }
 
       const cancelGoal = () => {
@@ -84,16 +84,37 @@ export default function Homepage() {
                 goalID: goal.id,
                 Reminder: false
             }))
+            setNewItem(true)
         }
         else {
             console.error ('No goal found')
         }
+      }
 
+      const deleteAction = (id: string) => {
+        if (action && action.id) {
+            const newActions = actions.filter (actionArr=>actionArr.id !== action.id);
+            setActions (newActions)
+            setAction (undefined)
+        }        
+      }
+
+      const saveAction = (action: Action) => {
+        // remove old Action if necessary
+        const newActions = allActions.filter (actionArr=>actionArr.id !== action.id);
+        newActions.push (action)
+        setAllActions(newActions)
+
+        const newGoalActions = actions.filter (actionArr=>actionArr.id !== action.id);
+        newGoalActions.push (action)
+        setActions (newGoalActions)
+        setNewItem(false)
       }
 
       const editAction = (id: string) => {
         const action = actions.find(action => action.id === id);
         setAction(action)
+        setNewItem(false)
       }
 
       const cancelAction = () => {
@@ -107,9 +128,9 @@ export default function Homepage() {
                     {!goal && !action &&
                         <img className='header-image' src={TruckImg} />}
                     {goal && !action &&
-                        <GoalForm goal={goal} onDelete={deleteGoal} onSave={saveGoal} />}
+                        <GoalForm goal={goal} onDelete={deleteGoal} onSave={saveGoal} newItem={newItem} />}
                     {goal && action &&
-                      <ActionForm action={action}/>}
+                      <ActionForm action={action} onDelete={deleteAction} onSave={saveAction} newItem={newItem}/>}
                 {/* </CSSTransition>                  */}
             <Box sx={{padding: '15px', m: 2}}>
                         <Typography variant='h5' align='center' color='primary.white'>
@@ -127,11 +148,11 @@ export default function Homepage() {
                 {goal && !action  &&
                 <React.Fragment>
                     <WideButton loading={loading} cancel={false} buttonText={'Add Action'} onClick={addAction}/>
-                    <WideButton loading={false} cancel={true} buttonText='Cancel' onClick={cancelGoal}/>
+                    <WideButton loading={false} cancel={true} buttonText='Close' onClick={cancelGoal}/>
                 </React.Fragment>}
                 {goal && action  &&
                 <React.Fragment>
-                    <WideButton loading={false} cancel={true} buttonText='Cancel' onClick={cancelAction}/>
+                    <WideButton loading={false} cancel={true} buttonText='Close' onClick={cancelAction}/>
                 </React.Fragment>}
             </Box>
         </React.Fragment>

@@ -9,11 +9,12 @@ interface GoalListProps {
     goal: Goal;
     onDelete:(id: string) => void;
     onSave:(goal: Goal) => void;
+    newItem: boolean;
 }
 
-export default function GoalForm({goal, onDelete, onSave}: GoalListProps) {
+export default function GoalForm({goal, onDelete, onSave, newItem}: GoalListProps) {
   const [goalState, setGoalState] = useState<Goal>(goal);
-  const [edit, setEdit] = useState<boolean>(false);
+  const [edit, setEdit] = useState<boolean>(newItem);
 
   const handleChange =
   (prop: keyof Goal) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,9 +22,13 @@ export default function GoalForm({goal, onDelete, onSave}: GoalListProps) {
   };
 
 
-  const saveGoal = async () => {
-      const original = await DataStore.query(Goal, goalState.id);
-      if (original) {
+  const saveGoal = async () => {  
+      if (!newItem) {
+        const original = await DataStore.query(Goal, goalState.id);
+        if (!original) {
+          console.error ('No original item found')
+          return;
+        }
         console.log ('Exists')
         let newGoal = await DataStore.save(
           Goal.copyOf(original, updated => {

@@ -3,16 +3,20 @@ import { FormControl, InputLabel, Input, Switch ,Button, Box, TextField, FormCon
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import {Delete, Edit, Check} from '@mui/icons-material'
-import { Action } from '../models/index'
+import {Delete, Edit, Check} from '@mui/icons-material';
+import { Action } from '../models/index';
+import {DataStore} from '@aws-amplify/datastore';
 
 interface ActionListProps {
     action: Action;
+    onDelete:(id: string) => void;
+    onSave:(action: Action) => void;
+    newItem: boolean;
 }
 
-export default function actionForm({action}: ActionListProps) {
+export default function actionForm({action, onDelete, onSave, newItem}: ActionListProps) {
   const [actionState, setactionState] = useState<Action>(action);
-  const [edit, setEdit] = useState<boolean>(false);
+  const [edit, setEdit] = useState<boolean>(newItem);
 
   const handleChange =
     (prop: keyof Action) => (event: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
@@ -23,6 +27,47 @@ export default function actionForm({action}: ActionListProps) {
     (prop: keyof Action) => (value: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>|null) => {
       setactionState({ ...actionState, [prop]: value });
     };
+
+    const saveAction = async () => {    
+      if (!newItem) {
+        const original = await DataStore.query(Action, actionState.id);
+        if (original) {
+          return;
+        }
+        console.log ('Exists')
+        let newAction = await DataStore.save(
+          Action.copyOf(original!, updated => {
+            updated.Description = actionState.Description
+            updated.Notes = actionState.Notes
+            updated.Active = actionState.Active
+            updated.Reminder = actionState.Reminder
+            updated.FrequencyDays = actionState.FrequencyDays
+            updated.TimesPerDays = actionState.TimesPerDays
+            updated.StartDate = actionState.StartDate
+          })
+        )
+        onSave(newAction)
+        setEdit(false)
+      }
+      else {
+        console.log ('New')
+        let ActionToCommit = new Action ({
+          Description: actionState.Description,
+          Notes: actionState.Notes,
+          Active: actionState.Active,
+          Reminder: actionState.Reminder,
+          FrequencyDays: actionState.FrequencyDays,
+          TimesPerDays: actionState.TimesPerDays,
+          StartDate: actionState.StartDate,
+          goalID: actionState.goalID
+        })
+        let newAction = await DataStore.save (ActionToCommit)
+        onSave(newAction)
+        setEdit(false)
+      }
+  }
+  
+
 
   return (
     <Box sx={{padding: '15px', m: 2}}>
