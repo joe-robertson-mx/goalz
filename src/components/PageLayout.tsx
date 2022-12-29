@@ -65,7 +65,7 @@ export default function PageLayout({user, signOut, children}: PageLayoutProps) {
                         open={Boolean(anchorEl)}
                         onClose={handleClose}
                     >
-                        <MenuItem onClick={handleClose}>{user.attributes?.email}</MenuItem>
+                        <MenuItem onClick={handleClose}>{user!.attributes?.email}</MenuItem>
                         <MenuItem onClick={handleClose}>Profile</MenuItem>
                         <MenuItem onClick={signOut}>Sign Out</MenuItem>
                     </Menu>
