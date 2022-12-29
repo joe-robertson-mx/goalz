@@ -2,6 +2,11 @@ version: 1
 frontend:
   phases:
     # IMPORTANT - Please verify your build commands
+      pre_build: {
+      commands: [
+        "npm i -g npm && npm ci"
+      ]
+    },
     build:
       commands: [npm run build]
   artifacts:
